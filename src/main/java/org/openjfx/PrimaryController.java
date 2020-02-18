@@ -7,6 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -56,6 +58,15 @@ public class PrimaryController {
     private Label lblErrDate;
 
     @FXML
+    private TableColumn<Person, Integer> TVDay;
+
+    @FXML
+    private TableColumn<Person, Integer> TVMonth;
+
+    @FXML
+    private TableColumn<Person, Integer> TVYear;
+
+    @FXML
     private void txtNameEdited(TableColumn.CellEditEvent<Person, String> event){
         event.getRowValue().setName(event.getNewValue());
     }
@@ -68,6 +79,21 @@ public class PrimaryController {
     @FXML
     private void txtPhoneEdited(TableColumn.CellEditEvent<Person, String> event){
         event.getRowValue().setPhoneNr(event.getNewValue());
+    }
+
+    @FXML
+    private void intDayEdited(TableColumn.CellEditEvent<Person, Integer> event) {
+        event.getRowValue().setDay(event.getNewValue());
+    }
+
+    @FXML
+    private void intMonthEdited(TableColumn.CellEditEvent<Person, Integer> event) {
+        event.getRowValue().setMonth(event.getNewValue());
+    }
+
+    @FXML
+    private void intYearEdited(TableColumn.CellEditEvent<Person, Integer> event) {
+        event.getRowValue().setYear(event.getNewValue());
     }
 
     @FXML
@@ -147,7 +173,7 @@ public class PrimaryController {
             System.err.println(e.getMessage());
         }
 
-        //Forsøker å lese personer fra tekstfil.
+        //Forsøker å lese personer fra tekstfil til TableView.
         try {
             ObservableList<Person> peopleList = (ObservableList<Person>) ReadPerson.load(path);
             System.out.println(PersonFormater.formatPeople(peopleList));
@@ -156,7 +182,10 @@ public class PrimaryController {
             System.err.println(e.getMessage());
         }
 
-        //Forsøker å skrive personer til TableView.
+        //Kode for å gjøre endringer direkte i TableView
+        TVDay.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        TVMonth.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        TVYear.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
 
 
 

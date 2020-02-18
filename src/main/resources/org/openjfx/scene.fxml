@@ -6,11 +6,12 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.cell.TextFieldTableCell?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <VBox alignment="CENTER" prefHeight="652.0" prefWidth="936.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.PrimaryController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -18,43 +19,43 @@
    <children>
       <AnchorPane prefHeight="655.0" prefWidth="932.0">
          <children>
-            <TableView fx:id="TVTable" layoutX="14.0" layoutY="206.0" prefHeight="396.0" prefWidth="868.0">
+            <TableView fx:id="TVTable" editable="true" layoutX="14.0" layoutY="206.0" prefHeight="396.0" prefWidth="868.0">
               <columns>
-                <TableColumn prefWidth="203.19997787475586" text="Name" onEditCommit="#txtNameEdited">
+                <TableColumn onEditCommit="#txtNameEdited" prefWidth="203.19997787475586" text="Name">
                         <cellValueFactory>
                            <PropertyValueFactory property="name" />
                         </cellValueFactory>
                         <cellFactory>
-                            <TextFieldTableCell fx:factory="forTableColumn"/>
+                            <TextFieldTableCell fx:factory="forTableColumn" />
                         </cellFactory>
                 </TableColumn>
-                  <TableColumn prefWidth="289.6000518798828" text="Email"  onEditCommit="#txtEMailEdited">
+                  <TableColumn onEditCommit="#txtEMailEdited" prefWidth="289.6000518798828" text="Email">
                      <cellValueFactory>
                         <PropertyValueFactory property="eMail" />
                      </cellValueFactory>
                       <cellFactory>
-                          <TextFieldTableCell fx:factory="forTableColumn"/>
+                          <TextFieldTableCell fx:factory="forTableColumn" />
                       </cellFactory>
                   </TableColumn>
-                  <TableColumn prefWidth="149.5999755859375" text="Phone number"  onEditCommit="#txtPhoneEdited">
+                  <TableColumn onEditCommit="#txtPhoneEdited" prefWidth="149.5999755859375" text="Phone number">
                      <cellValueFactory>
                         <PropertyValueFactory property="phoneNr" />
                      </cellValueFactory>
                       <cellFactory>
-                          <TextFieldTableCell fx:factory="forTableColumn"/>
+                          <TextFieldTableCell fx:factory="forTableColumn" />
                       </cellFactory>
                   </TableColumn>
-                  <TableColumn prefWidth="61.5999755859375" text="Day" >
+                  <TableColumn fx:id="TVDay" onEditCommit="#intDayEdited" prefWidth="61.5999755859375" text="Day">
                      <cellValueFactory>
                         <PropertyValueFactory property="day" />
                      </cellValueFactory>
                   </TableColumn>
-                  <TableColumn prefWidth="62.39996337890625" text="Month" >
+                  <TableColumn fx:id="TVMonth" onEditCommit="#intMonthEdited" prefWidth="62.39996337890625" text="Month">
                      <cellValueFactory>
                         <PropertyValueFactory property="month" />
                      </cellValueFactory>
                   </TableColumn>
-                  <TableColumn   prefWidth="103.2000732421875" text="Year" >
+                  <TableColumn fx:id="TVYear" onEditCommit="#intYearEdited" prefWidth="103.2000732421875" text="Year">
                      <cellValueFactory>
                         <PropertyValueFactory property="year" />
                      </cellValueFactory>
