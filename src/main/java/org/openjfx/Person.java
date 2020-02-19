@@ -3,11 +3,41 @@ package org.openjfx;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 public class Person {
-    private SimpleStringProperty name, eMail, phoneNr;
-    private SimpleIntegerProperty day, month, year;
+    private transient SimpleStringProperty name, eMail, phoneNr;
+    private transient SimpleIntegerProperty day, month, year;
 
     public Person(String name, String eMail, String phoneNr, int day, int month, int year){
+        this.name = new SimpleStringProperty(name);
+        this.eMail = new SimpleStringProperty(eMail);
+        this.phoneNr = new SimpleStringProperty(phoneNr);
+        this.day = new SimpleIntegerProperty(day);
+        this.month = new SimpleIntegerProperty(month);
+        this.year = new SimpleIntegerProperty(year);
+    }
+
+    private void writeObject(ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+        s.writeUTF(name.getValue());
+        s.writeUTF(eMail.getValue());
+        s.writeUTF(phoneNr.getValue());
+        s.writeInt(day.getValue());
+        s.writeInt(month.getValue());
+        s.writeInt(year.getValue());
+    }
+
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        String name = s.readUTF();
+        String eMail = s.readUTF();
+        String phoneNr = s.readUTF();
+        int day = s.readInt();
+        int month = s.readInt();
+        int year = s.readInt();
+
         this.name = new SimpleStringProperty(name);
         this.eMail = new SimpleStringProperty(eMail);
         this.phoneNr = new SimpleStringProperty(phoneNr);
