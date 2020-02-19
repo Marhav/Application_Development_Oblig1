@@ -1,17 +1,14 @@
 package org.openjfx;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.io.File;
@@ -31,6 +28,9 @@ public class PrimaryController implements Initializable {
     private Register register = new Register();
     private ObservableList<String> chkbxList = FXCollections.observableArrayList();
     private Path path = Paths.get("PersonRegister.txt");
+
+    ReadPersonTxt readTxt = new ReadPersonTxt();
+    WritePersonTxt writeTxt = new WritePersonTxt();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -178,7 +178,7 @@ public class PrimaryController implements Initializable {
         File selectedFile = openFile.showOpenDialog(new Stage());
         if (selectedFile != null) {
             try {
-                register.personRegister = (ObservableList<Person>) ReadPerson.load(selectedFile.toPath());
+                register.personRegister = (ObservableList<Person>) readTxt.load(selectedFile.toPath());
                 System.out.println(PersonFormater.formatPeople(register.personRegister));
                 TVTable.setItems(register.personRegister);
             } catch (IOException e) {
@@ -197,11 +197,32 @@ public class PrimaryController implements Initializable {
                 new FileChooser.ExtensionFilter("Binary Java File (.jobj)", "*.jobj"));
         File selectedFile = saveFile.showSaveDialog(new Stage());
         if (selectedFile != null) {
-            try {
-                WritePerson.writeFile(register.personRegister, selectedFile.toPath());
+            WritePerson saver = null;
+
+            switch (FileExtension.get(selectedFile)) {
+                case ".txt":
+                    saver = new WritePersonTxt();
+                    break;
+                case ".jobj":
+                    saver = new WritePersonJobj();
+                    break;
+                default:
+                    System.err.println("Du kan bare lagre til enten txt eller jobj filer.");
+            }
+
+            if (saver != null) {
+                try {
+                    saver.writeFile(register.personRegister, selectedFile.toPath());
+                    System.err.println("Registeret ble lagret!");
+                } catch (IOException e) {
+                    System.err.println("Lagring til fil feilet. Grunn: " + e.getMessage());
+                }
+            }
+            /*try {
+                WritePersonTxt.writeFile(register.personRegister, selectedFile.toPath());
             } catch (IOException e) {
                 System.err.println(e.getMessage());
-            }
+            }*/
         }
     }
 
@@ -333,7 +354,7 @@ public class PrimaryController implements Initializable {
 
         //Forsøker å skrive fra personRegister til tekstfil.
         try {
-            WritePerson.writeFile(register.personRegister, path);
+            writeTxt.writeFile(register.personRegister, path);
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -341,7 +362,7 @@ public class PrimaryController implements Initializable {
         //TableView
         //Forsøker å lese personer fra tekstfil til TableView.
         try {
-            register.personRegister = (ObservableList<Person>) ReadPerson.load(path);
+            register.personRegister = (ObservableList<Person>) readTxt.load(path);
             System.out.println(PersonFormater.formatPeople(register.personRegister));
             TVTable.setItems(register.personRegister);
         } catch (IOException e) {

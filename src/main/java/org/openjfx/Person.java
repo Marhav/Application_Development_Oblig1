@@ -6,8 +6,9 @@ import javafx.beans.property.SimpleStringProperty;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class Person {
+public class Person implements Serializable {
     private transient SimpleStringProperty name, eMail, phoneNr;
     private transient SimpleIntegerProperty day, month, year;
 

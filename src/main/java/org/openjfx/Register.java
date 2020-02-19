@@ -6,10 +6,11 @@ import javafx.collections.ObservableList;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Register {
+public class Register implements Serializable {
 
     // oppretter et array av personer.
     public transient ObservableList<Person> personRegister = FXCollections.observableArrayList();
