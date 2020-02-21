@@ -27,7 +27,7 @@ public class PrimaryController implements Initializable {
     private int day, month, year;
     private Register register = new Register();
     private ObservableList<String> chkbxList = FXCollections.observableArrayList();
-    private Path path = Paths.get("PersonRegister.txt");
+    private Path path = Paths.get("StartUpRegister.txt");
 
     ReadPersonTxt readTxt = new ReadPersonTxt();
     WritePersonTxt writeTxt = new WritePersonTxt();
@@ -44,6 +44,13 @@ public class PrimaryController implements Initializable {
         String chkbx6 = "Year";
         chkbxList.addAll(chkbx1, chkbx2, chkbx3, chkbx4, chkbx5, chkbx6);
         chkbxSearch.getItems().addAll(chkbxList);
+        //Kode for å laste inn register som var sist brukt.
+        try {
+            register.personRegister = (ObservableList<Person>) readTxt.load(path);
+            TVTable.setItems(register.personRegister);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     @FXML
@@ -170,19 +177,35 @@ public class PrimaryController implements Initializable {
 
     @FXML
     void btnOpenFile(ActionEvent event) {
+        //Kode for åpning av fil med filutforsker
         FileChooser openFile = new FileChooser();
         openFile.setTitle("Open Resource File");
+        openFile.setInitialDirectory(new File("C:\\Users\\Havnaas\\IdeaProjects\\Snake\\src\\AvvikOppgave\\RegisterFiler"));
         openFile.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Text File (.txt)", "*.txt"),
                 new FileChooser.ExtensionFilter("Binary Java File (.jobj)", "*.jobj"));
         File selectedFile = openFile.showOpenDialog(new Stage());
         if (selectedFile != null) {
-            try {
-                register.personRegister = (ObservableList<Person>) readTxt.load(selectedFile.toPath());
-                System.out.println(PersonFormater.formatPeople(register.personRegister));
-                TVTable.setItems(register.personRegister);
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
+            ReadPerson opener = null;
+
+            switch (FileExtension.get(selectedFile)) {
+                case ".txt":
+                    opener = new ReadPersonTxt();
+                    break;
+                case ".jobj":
+                    opener = new ReadPersonJobj();
+                    break;
+                default:
+                    System.err.println("Du kan bare åpne txt eller jobj filer.");
+            }
+            if (opener != null) {
+                try {
+                    register.personRegister = (ObservableList<Person>) opener.load(selectedFile.toPath());
+                    TVTable.setItems(register.personRegister);
+                    System.out.println("Registeret ble åpnet!");
+                } catch (IOException e) {
+                    System.err.println("Åpning av fil feilet. Grunn: " + e.getMessage());
+                }
             }
         }
     }
@@ -192,6 +215,7 @@ public class PrimaryController implements Initializable {
         //Kode for lagring av fil med filutforsker
         FileChooser saveFile = new FileChooser();
         saveFile.setTitle("Open Resource File");
+        saveFile.setInitialDirectory(new File("C:\\Users\\Havnaas\\IdeaProjects\\Snake\\src\\AvvikOppgave\\RegisterFiler"));
         saveFile.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Text Files (.txt)", "*.txt"),
                 new FileChooser.ExtensionFilter("Binary Java File (.jobj)", "*.jobj"));
@@ -209,20 +233,14 @@ public class PrimaryController implements Initializable {
                 default:
                     System.err.println("Du kan bare lagre til enten txt eller jobj filer.");
             }
-
             if (saver != null) {
                 try {
                     saver.writeFile(register.personRegister, selectedFile.toPath());
-                    System.err.println("Registeret ble lagret!");
+                    System.out.println("Registeret ble lagret!");
                 } catch (IOException e) {
                     System.err.println("Lagring til fil feilet. Grunn: " + e.getMessage());
                 }
             }
-            /*try {
-                WritePersonTxt.writeFile(register.personRegister, selectedFile.toPath());
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-            }*/
         }
     }
 
@@ -230,60 +248,66 @@ public class PrimaryController implements Initializable {
     void btnSearch(javafx.event.ActionEvent event) {
         //Kode for å søke i TableView, basert på choice box verdi.
         String chcbxValue = chkbxSearch.getValue();
-        if (chcbxValue == null) {
-            lblErrChcbx.setText("Choose type of search.");
-        } else if (chcbxValue.equals("Name")) {
-            List<Person> list = register.personRegister.stream().filter(i -> i.getName().equals(txtSearch.getText())).
-                    collect(Collectors.toCollection(FXCollections::observableArrayList));
-            TVTable.setItems((ObservableList<Person>) list);
-            TVTable.refresh();
-        } else if (chcbxValue.equals("Email")) {
-            List<Person> list = register.personRegister.stream().filter(i -> i.getEMail().equals(txtSearch.getText())).
-                    collect(Collectors.toCollection(FXCollections::observableArrayList));
-            TVTable.setItems((ObservableList<Person>) list);
-            TVTable.refresh();
-        } else if (chcbxValue.equals("Phone")) {
-            List<Person> list = register.personRegister.stream().filter(i -> i.getPhoneNr().equals(txtSearch.getText())).
-                    collect(Collectors.toCollection(FXCollections::observableArrayList));
-            TVTable.setItems((ObservableList<Person>) list);
-            TVTable.refresh();
-        } else if (chcbxValue.equals("Day")) {
-            try {
-                int inSearch = Integer.parseInt(txtSearch.getText());
-                List<Person> list = register.personRegister.stream().filter(i -> i.getDay() == inSearch).
+        List<Person> list;
+        switch (chcbxValue) {
+            case "Name":
+                list = register.personRegister.stream().filter(i -> i.getName().toLowerCase().contains(txtSearch.getText().toLowerCase())).
                         collect(Collectors.toCollection(FXCollections::observableArrayList));
                 TVTable.setItems((ObservableList<Person>) list);
                 TVTable.refresh();
-            } catch (NumberFormatException e) {
-                System.out.println(e.getMessage());
-            }
-        } else if (chcbxValue.equals("Month")) {
-            try {
-                int inSearch = Integer.parseInt(txtSearch.getText());
-                List<Person> list = register.personRegister.stream().filter(i -> i.getMonth() == inSearch).
+                break;
+            case "Email":
+                list = register.personRegister.stream().filter(i -> i.getEMail().toLowerCase().contains(txtSearch.getText().toLowerCase())).
                         collect(Collectors.toCollection(FXCollections::observableArrayList));
                 TVTable.setItems((ObservableList<Person>) list);
                 TVTable.refresh();
-            } catch (NumberFormatException e) {
-                System.out.println(e.getMessage());
-            }
-        } else if (chcbxValue.equals("Year")) {
-            try {
-                int inSearch = Integer.parseInt(txtSearch.getText());
-                List<Person> list = register.personRegister.stream().filter(i -> i.getYear() == inSearch).
+                break;
+            case "Phone":
+                list = register.personRegister.stream().filter(i -> i.getPhoneNr().toLowerCase().contains(txtSearch.getText().toLowerCase())).
                         collect(Collectors.toCollection(FXCollections::observableArrayList));
                 TVTable.setItems((ObservableList<Person>) list);
                 TVTable.refresh();
-            } catch (NumberFormatException e) {
-                System.out.println(e.getMessage());
-            }
+                break;
+            case "Day":
+                try {
+                    int inSearch = Integer.parseInt(txtSearch.getText());
+                    list = register.personRegister.stream().filter(i -> i.getDay() == inSearch).
+                            collect(Collectors.toCollection(FXCollections::observableArrayList));
+                    TVTable.setItems((ObservableList<Person>) list);
+                    TVTable.refresh();
+                } catch (NumberFormatException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
+            case "Month":
+                try {
+                    int inSearch = Integer.parseInt(txtSearch.getText());
+                    list = register.personRegister.stream().filter(i -> i.getMonth() == inSearch).
+                            collect(Collectors.toCollection(FXCollections::observableArrayList));
+                    TVTable.setItems((ObservableList<Person>) list);
+                    TVTable.refresh();
+                } catch (NumberFormatException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
+            case "Year":
+                try {
+                    int inSearch = Integer.parseInt(txtSearch.getText());
+                    list = register.personRegister.stream().filter(i -> i.getYear() == inSearch).
+                            collect(Collectors.toCollection(FXCollections::observableArrayList));
+                    TVTable.setItems((ObservableList<Person>) list);
+                    TVTable.refresh();
+                } catch (NumberFormatException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
+            default:
+                lblErrChcbx.setText("Choose type of search.");
         }
-
     }
 
     @FXML
     public void btnRegister(javafx.event.ActionEvent event) {
-
 
         //Avvikshåndtering
         boolean successful = true;
@@ -322,6 +346,7 @@ public class PrimaryController implements Initializable {
             day = CheckIntegerInput.day(inDay);
         } catch (InvalidDateException e) {
             dateError = true;
+            System.err.println(e.getMessage());
         }
         //Month
         try {
@@ -329,6 +354,7 @@ public class PrimaryController implements Initializable {
             month = CheckIntegerInput.month(inMonth);
         } catch (InvalidDateException e) {
             dateError = true;
+            System.err.println(e.getMessage());
         }
         //Year
         try {
@@ -336,6 +362,7 @@ public class PrimaryController implements Initializable {
             year = CheckIntegerInput.year(inYear);
         } catch (InvalidDateException e) {
             dateError = true;
+            System.err.println(e.getMessage());
         }
         // Oppretter feilmelding for dato.
         if (dateError) {
@@ -352,7 +379,7 @@ public class PrimaryController implements Initializable {
             register.registrerPerson(enPerson);
         }
 
-        //Forsøker å skrive fra personRegister til tekstfil.
+        //Forsøker å skrive fra personRegister til startUp tekstfil.
         try {
             writeTxt.writeFile(register.personRegister, path);
         } catch (IOException e) {
@@ -360,7 +387,7 @@ public class PrimaryController implements Initializable {
         }
 
         //TableView
-        //Forsøker å lese personer fra tekstfil til TableView.
+        //Forsøker å lese personer fra startUp tekstfil til TableView.
         try {
             register.personRegister = (ObservableList<Person>) readTxt.load(path);
             System.out.println(PersonFormater.formatPeople(register.personRegister));
@@ -375,17 +402,3 @@ public class PrimaryController implements Initializable {
         TVYear.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
     }
 }
-        /*
-
-        /*
-
-        */
-
-        /*
-        // Lager String av arrayet og printer det i Register.
-        String ut = "";
-        for(Person enPers : register.personRegister){
-            ut += enPers+"\n";
-        }
-        lblRegister.setText(ut);
-        */

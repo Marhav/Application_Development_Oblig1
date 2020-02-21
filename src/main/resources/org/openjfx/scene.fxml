@@ -23,6 +23,29 @@
    <children>
       <AnchorPane prefHeight="655.0" prefWidth="932.0">
          <children>
+            <MenuBar prefHeight="26.0" prefWidth="896.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#btnOpenFile" text="Open file" />
+                        <MenuItem mnemonicParsing="false" onAction="#btnSaveFile" text="Save file" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <Label fx:id="lblErrChcbx" layoutX="738.0" layoutY="162.0" prefHeight="18.0" prefWidth="140.0" textFill="RED" />
+            <Label layoutX="31.0" layoutY="36.0" prefHeight="75.0" prefWidth="298.0" text="Personregister">
+               <font>
+                  <Font size="41.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtName" layoutX="394.0" layoutY="61.0" promptText="Name" />
+            <TextField fx:id="txtEmail" layoutX="561.0" layoutY="61.0" promptText="Email" />
+            <TextField fx:id="txtDay" layoutX="394.0" layoutY="100.0" prefHeight="26.0" prefWidth="38.0" promptText="DD" />
+            <TextField fx:id="txtMonth" layoutX="439.0" layoutY="100.0" prefHeight="26.0" prefWidth="38.0" promptText="MM" />
+            <TextField fx:id="txtYear" layoutX="483.0" layoutY="100.0" prefHeight="26.0" prefWidth="60.0" promptText="YYYY" />
+            <TextField fx:id="txtPhoneNr" layoutX="561.0" layoutY="101.0" promptText="Phone" />
+            <Button layoutX="727.0" layoutY="77.0" mnemonicParsing="false" onAction="#btnRegister" prefHeight="36.0" prefWidth="130.0" text="Register" />
             <TableView fx:id="TVTable" editable="true" layoutX="14.0" layoutY="206.0" prefHeight="396.0" prefWidth="868.0">
               <columns>
                 <TableColumn onEditCommit="#txtNameEdited" prefWidth="203.19997787475586" text="Name">
@@ -66,36 +89,13 @@
                   </TableColumn>
               </columns>
             </TableView>
-            <Label layoutX="31.0" layoutY="36.0" prefHeight="75.0" prefWidth="298.0" text="Personregister">
-               <font>
-                  <Font size="41.0" />
-               </font>
-            </Label>
-            <TextField fx:id="txtName" layoutX="394.0" layoutY="61.0" promptText="Name" />
-            <TextField fx:id="txtEmail" layoutX="561.0" layoutY="61.0" promptText="Email" />
-            <TextField fx:id="txtPhoneNr" layoutX="561.0" layoutY="101.0" promptText="Phone" />
-            <TextField fx:id="txtDay" layoutX="394.0" layoutY="100.0" prefHeight="26.0" prefWidth="38.0" promptText="DD" />
-            <TextField fx:id="txtMonth" layoutX="439.0" layoutY="100.0" prefHeight="26.0" prefWidth="38.0" promptText="MM" />
-            <TextField fx:id="txtYear" layoutX="483.0" layoutY="100.0" prefHeight="26.0" prefWidth="60.0" promptText="YYYY" />
             <Label fx:id="lblErrName" layoutX="394.0" layoutY="42.0" prefHeight="18.0" prefWidth="166.0" textFill="RED" />
             <Label fx:id="lblErrEmail" layoutX="561.0" layoutY="42.0" prefHeight="18.0" prefWidth="166.0" textFill="RED" />
             <Label fx:id="lblErrPhoneNr" layoutX="561.0" layoutY="126.0" prefHeight="18.0" prefWidth="166.0" textFill="RED" />
             <Label fx:id="lblErrDate" layoutX="394.0" layoutY="126.0" prefHeight="18.0" prefWidth="166.0" textFill="RED" />
-            <Button layoutX="727.0" layoutY="77.0" mnemonicParsing="false" onAction="#btnRegister" prefHeight="36.0" prefWidth="130.0" text="Register" />
             <ChoiceBox fx:id="chkbxSearch" layoutX="577.0" layoutY="157.0" prefHeight="26.0" prefWidth="158.0" />
             <TextField fx:id="txtSearch" layoutX="266.0" layoutY="158.0" prefHeight="26.0" prefWidth="298.0" />
             <Button layoutX="156.0" layoutY="158.0" mnemonicParsing="false" onAction="#btnSearch" prefHeight="26.0" prefWidth="97.0" text="Search" />
-            <Label fx:id="lblErrChcbx" layoutX="738.0" layoutY="162.0" prefHeight="18.0" prefWidth="140.0" textFill="RED" />
-            <MenuBar prefHeight="26.0" prefWidth="896.0">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#btnOpenFile" text="Open file" />
-                        <MenuItem mnemonicParsing="false" onAction="#btnSaveFile" text="Save file" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
          </children>
       </AnchorPane>
    </children>

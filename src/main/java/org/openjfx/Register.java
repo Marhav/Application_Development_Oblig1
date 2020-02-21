@@ -10,13 +10,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Register implements Serializable {
+class Register implements Serializable {
 
     // oppretter et array av personer.
-    public transient ObservableList<Person> personRegister = FXCollections.observableArrayList();
+    transient ObservableList<Person> personRegister = FXCollections.observableArrayList();
 
     // metode som legger til personer i arrayet.
-    public void registrerPerson(Person enPerson){
+    void registrerPerson(Person enPerson){
         personRegister.add(enPerson);
     }
 

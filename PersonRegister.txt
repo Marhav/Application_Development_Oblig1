@@ -1,3 +1,0 @@
-Marius;mar@hav.no;90045889;3;5;1995
-Anders;anders@hav.no;43125423;7;9;1999
-Uy;uy@hav.no;54656834;7;9;1999

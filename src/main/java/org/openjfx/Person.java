@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class Person implements Serializable {
+
     private transient SimpleStringProperty name, eMail, phoneNr;
     private transient SimpleIntegerProperty day, month, year;
 
