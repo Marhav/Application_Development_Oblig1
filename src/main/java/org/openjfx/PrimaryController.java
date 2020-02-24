@@ -100,17 +100,50 @@ public class PrimaryController implements Initializable {
 
     @FXML
     private void txtNameEdited(TableColumn.CellEditEvent<Person, String> event) {
-        event.getRowValue().setName(event.getNewValue());
+        try{
+            CheckStringInput.name(event.getNewValue());
+            event.getRowValue().setName(event.getNewValue());
+        } catch(InvalidStringException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Feil!");
+            alert.setHeaderText("Ugyldig data!");
+            alert.setContentText("Du må taste inn et gyldig navn!");
+            alert.showAndWait();
+            event.getRowValue().setName(event.getOldValue());
+        }
+        TVTable.refresh();
     }
 
     @FXML
     private void txtEMailEdited(TableColumn.CellEditEvent<Person, String> event) {
-        event.getRowValue().seteMail(event.getNewValue());
+        try{
+            CheckStringInput.eMail(event.getNewValue());
+            event.getRowValue().seteMail(event.getNewValue());
+        } catch(InvalidStringException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Feil!");
+            alert.setHeaderText("Ugyldig data!");
+            alert.setContentText("Du må taste inn et gyldig email!");
+            alert.showAndWait();
+            event.getRowValue().seteMail(event.getOldValue());
+        }
+        TVTable.refresh();
     }
 
     @FXML
     private void txtPhoneEdited(TableColumn.CellEditEvent<Person, String> event) {
-        event.getRowValue().setPhoneNr(event.getNewValue());
+        try{
+            CheckStringInput.phoneNr(event.getNewValue());
+            event.getRowValue().setPhoneNr(event.getNewValue());
+        } catch(InvalidStringException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Feil!");
+            alert.setHeaderText("Ugyldig data!");
+            alert.setContentText("Du må taste inn et gyldig mobilnummer!");
+            alert.showAndWait();
+            event.getRowValue().setPhoneNr(event.getOldValue());
+        }
+        TVTable.refresh();
     }
 
     @FXML
@@ -175,12 +208,14 @@ public class PrimaryController implements Initializable {
     @FXML
     private TextField txtSearch;
 
+    //"C:\\Users\\Havnaas\\IdeaProjects\\Snake\\src\\AvvikOppgave\\RegisterFiler"
+
     @FXML
     void btnOpenFile(ActionEvent event) {
         //Kode for åpning av fil med filutforsker
         FileChooser openFile = new FileChooser();
         openFile.setTitle("Open Resource File");
-        openFile.setInitialDirectory(new File("C:\\Users\\Havnaas\\IdeaProjects\\Snake\\src\\AvvikOppgave\\RegisterFiler"));
+        openFile.setInitialDirectory(new File(System.getProperty("user.dir")));
         openFile.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Text File (.txt)", "*.txt"),
                 new FileChooser.ExtensionFilter("Binary Java File (.jobj)", "*.jobj"));
@@ -249,60 +284,64 @@ public class PrimaryController implements Initializable {
         //Kode for å søke i TableView, basert på choice box verdi.
         String chcbxValue = chkbxSearch.getValue();
         List<Person> list;
-        switch (chcbxValue) {
-            case "Name":
-                list = register.personRegister.stream().filter(i -> i.getName().toLowerCase().contains(txtSearch.getText().toLowerCase())).
-                        collect(Collectors.toCollection(FXCollections::observableArrayList));
-                TVTable.setItems((ObservableList<Person>) list);
-                TVTable.refresh();
-                break;
-            case "Email":
-                list = register.personRegister.stream().filter(i -> i.getEMail().toLowerCase().contains(txtSearch.getText().toLowerCase())).
-                        collect(Collectors.toCollection(FXCollections::observableArrayList));
-                TVTable.setItems((ObservableList<Person>) list);
-                TVTable.refresh();
-                break;
-            case "Phone":
-                list = register.personRegister.stream().filter(i -> i.getPhoneNr().toLowerCase().contains(txtSearch.getText().toLowerCase())).
-                        collect(Collectors.toCollection(FXCollections::observableArrayList));
-                TVTable.setItems((ObservableList<Person>) list);
-                TVTable.refresh();
-                break;
-            case "Day":
-                try {
-                    int inSearch = Integer.parseInt(txtSearch.getText());
-                    list = register.personRegister.stream().filter(i -> i.getDay() == inSearch).
+        try {
+            switch (chcbxValue) {
+                case "Name":
+                    list = register.personRegister.stream().filter(i -> i.getName().toLowerCase().contains(txtSearch.getText().toLowerCase())).
                             collect(Collectors.toCollection(FXCollections::observableArrayList));
                     TVTable.setItems((ObservableList<Person>) list);
                     TVTable.refresh();
-                } catch (NumberFormatException e) {
-                    System.out.println(e.getMessage());
-                }
-                break;
-            case "Month":
-                try {
-                    int inSearch = Integer.parseInt(txtSearch.getText());
-                    list = register.personRegister.stream().filter(i -> i.getMonth() == inSearch).
+                    break;
+                case "Email":
+                    list = register.personRegister.stream().filter(i -> i.getEMail().toLowerCase().contains(txtSearch.getText().toLowerCase())).
                             collect(Collectors.toCollection(FXCollections::observableArrayList));
                     TVTable.setItems((ObservableList<Person>) list);
                     TVTable.refresh();
-                } catch (NumberFormatException e) {
-                    System.out.println(e.getMessage());
-                }
-                break;
-            case "Year":
-                try {
-                    int inSearch = Integer.parseInt(txtSearch.getText());
-                    list = register.personRegister.stream().filter(i -> i.getYear() == inSearch).
+                    break;
+                case "Phone":
+                    list = register.personRegister.stream().filter(i -> i.getPhoneNr().toLowerCase().contains(txtSearch.getText().toLowerCase())).
                             collect(Collectors.toCollection(FXCollections::observableArrayList));
                     TVTable.setItems((ObservableList<Person>) list);
                     TVTable.refresh();
-                } catch (NumberFormatException e) {
-                    System.out.println(e.getMessage());
-                }
-                break;
-            default:
-                lblErrChcbx.setText("Choose type of search.");
+                    break;
+                case "Day":
+                    try {
+                        int inSearch = Integer.parseInt(txtSearch.getText());
+                        list = register.personRegister.stream().filter(i -> i.getDay() == inSearch).
+                                collect(Collectors.toCollection(FXCollections::observableArrayList));
+                        TVTable.setItems((ObservableList<Person>) list);
+                        TVTable.refresh();
+                    } catch (NumberFormatException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "Month":
+                    try {
+                        int inSearch = Integer.parseInt(txtSearch.getText());
+                        list = register.personRegister.stream().filter(i -> i.getMonth() == inSearch).
+                                collect(Collectors.toCollection(FXCollections::observableArrayList));
+                        TVTable.setItems((ObservableList<Person>) list);
+                        TVTable.refresh();
+                    } catch (NumberFormatException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "Year":
+                    try {
+                        int inSearch = Integer.parseInt(txtSearch.getText());
+                        list = register.personRegister.stream().filter(i -> i.getYear() == inSearch).
+                                collect(Collectors.toCollection(FXCollections::observableArrayList));
+                        TVTable.setItems((ObservableList<Person>) list);
+                        TVTable.refresh();
+                    } catch (NumberFormatException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                default:
+                    System.err.println("Choose type of search.");
+            }
+        } catch (NullPointerException e){
+            lblErrChcbx.setText("Choose kategory for search.");
         }
     }
 
